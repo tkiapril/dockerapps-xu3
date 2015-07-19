@@ -1,0 +1,13 @@
+[Unit]
+Description=nginx Docker Container
+Requires=time-sync.service docker.service php-fpm.service
+After=time-sync.service docker.service php-fpm.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker start -a nginx
+ExecReload=/usr/bin/docker kill -s HUP nginx
+ExecStop=/usr/bin/docker stop nginx
+
+[Install]
+WantedBy=multi-user.target

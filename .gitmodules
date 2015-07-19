@@ -1,0 +1,18 @@
+[submodule "docker-archlinux-odroidxu3"]
+	path = docker-archlinux-odroidxu3
+	url = https://github.com/tkiapril/docker-archlinux-odroidxu3.git
+[submodule "docker-mariadb-archlinux"]
+	path = docker-mariadb-archlinux
+	url = https://github.com/tkiapril/docker-mariadb-archlinux.git
+[submodule "docker-redis-armhf"]
+	path = docker-redis-armhf
+	url = https://github.com/tkiapril/docker-redis-armhf.git
+[submodule "docker-nginx-archlinux"]
+	path = docker-nginx-archlinux
+	url = https://github.com/tkiapril/docker-nginx-archlinux.git
+[submodule "docker-php-armhf"]
+	path = docker-php-armhf
+	url = https://github.com/tkiapril/docker-php-armhf.git
+[submodule "docker-php-fpm-ext"]
+	path = docker-php-fpm-ext
+	url = https://github.com/tkiapril/docker-php-fpm-ext.git

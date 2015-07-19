@@ -1,0 +1,12 @@
+[Unit]
+Description=MariaDB Docker Container
+Requires=time-sync.service docker.service
+After=time-sync.service docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker start -a mariadb
+ExecStop=/usr/bin/docker stop mariadb
+
+[Install]
+WantedBy=multi-user.target

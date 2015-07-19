@@ -1,0 +1,11 @@
+[Unit]
+Description=Run ownCloud cron job regularly
+Requires=time-sync.service nginx.service
+After=time-sync.service nginx.service
+
+[Timer]
+OnBootSec=120
+OnUnitActiveSec=15min
+
+[Install]
+WantedBy=timers.target

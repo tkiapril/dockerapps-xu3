@@ -1,0 +1,7 @@
+[Unit]
+Description=ownCloud cron job
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/curl -sk https://example.com/cron.php
+ExecStart=/usr/bin/docker start owncloud-indexer

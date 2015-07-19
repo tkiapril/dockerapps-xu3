@@ -1,0 +1,12 @@
+[Unit]
+Description=php-fpm Docker Container
+Requires=time-sync.service docker.service mariadb.service redis.service
+After=time-sync.service docker.service mariadb.service redis.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker start -a php-fpm
+ExecStop=/usr/bin/docker stop php-fpm
+
+[Install]
+WantedBy=multi-user.target
