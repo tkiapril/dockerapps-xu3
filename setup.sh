@@ -70,5 +70,5 @@ if [ -f /etc/systemd/system/nginx.service ]; then cp systemd-services/nginx.serv
 docker create --name owncloud-indexer --volumes-from web-data \
               --volumes-from mariadb-unixsocket \
               --volumes-from data-mount \
-              --link redis:redis --link mariadb:mariadb php:fpm-ext sudo -uwww-data php -f /var/www/hosts/$OWNCLOUD_HOSTNAME/public_html/console.php files:scan --all > /dev/null
+              --link redis:redis --link mariadb:mariadb php:fpm-ext bash -c "sudo -uwww-data php -f /var/www/hosts/$OWNCLOUD_HOSTNAME/public_html/console.php files:scan --all > /dev/null && echo Done at \$(date)"
 if [ -f /etc/systemd/system/owncloud-cron.service && -f /etc/systemd/system/owncloud-cron.timer ]; then cp systemd-services/owncloud-cron.* /etc/systemd/system/ && sudo systemctl daemon-reload && echo "Please modify /etc/systemd/system/owncloud-cron.service file to suit your setup."; else echo "owncloud-cron.service/timer file not copied since it exists; do it on your own."; fi
