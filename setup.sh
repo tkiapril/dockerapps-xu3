@@ -27,8 +27,6 @@ docker build -t redis docker-redis-armhf/3.0/
 docker create --name redis-data -v /data blank ""
 docker create --name redis --volumes-from redis-data redis redis-server --appendonly yes
 if [ -f /etc/systemd/system/redis.service ]; then cp systemd-services/redis.service /etc/systemd/system/redis.service && sudo systemctl daemon-reload && sudo systemctl enable redis && sudo systemctl start redis; else echo "redis.service file not copied since it exists; do it on your own."; fi
-sudo systemctl enable redis
-sudo systemctl start redis
 
 # mount /data
 docker create --name data-mount -v /data:/data blank ""
@@ -51,8 +49,6 @@ docker create --name php-fpm --volumes-from web-data \
 	      --volumes-from data-mount \
               --link redis:redis --link mariadb:mariadb php:fpm-ext
 if [ -f /etc/systemd/system/php-fpm.service ]; then cp systemd-services/php-fpm.service /etc/systemd/system/php-fpm.service && sudo systemctl daemon-reload && sudo systemctl enable php-fpm && sudo systemctl start php-fpm; else echo "php-fpm.service file not copied since it exists; do it on your own."; fi
-sudo systemctl enable php-fpm
-sudo systemctl start php-fpm
 
 # nginx
 docker create --name nginx --volumes-from web-data --volumes-from nginx-conf --volumes-from data-mount --volumes-from php-fpm-unixsocket --link php-fpm:php -p 80:80 -p 443:443 nginx
@@ -70,5 +66,5 @@ if [ -f /etc/systemd/system/nginx.service ]; then cp systemd-services/nginx.serv
 docker create --name owncloud-indexer --volumes-from web-data \
               --volumes-from mariadb-unixsocket \
               --volumes-from data-mount \
-              --link redis:redis --link mariadb:mariadb php:fpm-ext bash -c "sudo -uwww-data php -f /var/www/hosts/$OWNCLOUD_HOSTNAME/public_html/console.php files:scan --all > /dev/null && echo Done at \$(date)"
-if [ -f /etc/systemd/system/owncloud-cron.service && -f /etc/systemd/system/owncloud-cron.timer ]; then cp systemd-services/owncloud-cron.* /etc/systemd/system/ && sudo systemctl daemon-reload && echo "Please modify /etc/systemd/system/owncloud-cron.service file to suit your setup."; else echo "owncloud-cron.service/timer file not copied since it exists; do it on your own."; fi
+              --link redis:redis --link mariadb:mariadb php:fpm-ext sudo -uwww-data php -f /var/www/hosts/$OWNCLOUD_HOSTNAME/public_html/console.php files:scan --all > /dev/null
+if [ -f /etc/systemd/system/owncloud-cron.service && -f /etc/systemd/system/owncloud-cron.timer ]; then cp systemd-services/owncloud-cron.* /etc/systemd/system/ && sudo systemctl daemon-reload && echo "Please modify /etc/systemd/system/owncloud-cron.service file to suit your setup and enable and run it."; else echo "owncloud-cron.service/timer file not copied since it exists; do it on your own."; fi
