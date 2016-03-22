@@ -1,0 +1,12 @@
+[Unit]
+Description=Deluge Docker Container
+Requires=time-sync.service docker.service
+After=time-sync.service docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker start -a deluge
+ExecStop=/usr/bin/docker stop deluge
+
+[Install]
+WantedBy=multi-user.target

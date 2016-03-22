@@ -1,0 +1,12 @@
+[Unit]
+Description=Deluge Web Frontend Docker Container
+Requires=time-sync.service docker.service deluge.service
+After=time-sync.service docker.service deluge.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker start -a deluge-web
+ExecStop=/usr/bin/docker stop deluge-web
+
+[Install]
+WantedBy=multi-user.target

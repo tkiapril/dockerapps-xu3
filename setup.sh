@@ -31,6 +31,14 @@ if [ -f /etc/systemd/system/redis.service ]; then cp systemd-services/redis.serv
 # mount /data
 docker create --name data-mount -v /data:/data blank ""
 
+# deluge
+docker build -t deluge docker-deluge-archlinux
+docker build -t deluge-web docker-deluge-archlinux/web
+docker create --name deluge-conf -v /etc/deluge:/etc/deluge blank ""
+docker create --name deluge --volumes-from deluge-conf --volumes-from data-mount deluge
+docker create --name deluge-web --volumes-from deluge-conf --volumes-from data-mount deluge-web
+if [ -f /etc/systemd/system/deluge.service && -f /etc/systemd/system/deluge-web.service ]; then cp systemd-services/deluge* /etc/systemd/system/ && sudo systemctl daemon-reload && sudo systemctl enable deluge && sudo systemctl enable deluge-web && sudo systemctl start deluge && sudo systemctl start deluge-web; else echo "deluge(-web).service file not copied since it exists; do it on your own."; fi
+
 # web data
 docker build -t nginx docker-nginx-archlinux
 docker create --name nginx-conf -v /etc/nginx:/etc/nginx blank ""
