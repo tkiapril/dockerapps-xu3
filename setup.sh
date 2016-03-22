@@ -34,6 +34,7 @@ docker create --name data-mount -v /data:/data blank ""
 # web data
 docker build -t nginx docker-nginx-archlinux
 docker create --name nginx-conf -v /etc/nginx:/etc/nginx blank ""
+docker create --name nginx-cache -v /var/lib/nginx:/var/lib/nginx blank ""
 docker create --name web-data -v /var/www:/var/www blank ""
 mkdir $(pwd)/nginx-default-conf
 docker run -it --rm -v $(pwd)/nginx-default-conf:/temp nginx bash -c "mkdir -p /temp/etc /temp/usr/share && cp -r /etc/nginx /temp/etc && cp -r /usr/share/nginx /temp/usr/share"
@@ -51,7 +52,7 @@ docker create --name php-fpm --volumes-from web-data \
 if [ -f /etc/systemd/system/php-fpm.service ]; then cp systemd-services/php-fpm.service /etc/systemd/system/php-fpm.service && sudo systemctl daemon-reload && sudo systemctl enable php-fpm && sudo systemctl start php-fpm; else echo "php-fpm.service file not copied since it exists; do it on your own."; fi
 
 # nginx
-docker create --name nginx --volumes-from web-data --volumes-from nginx-conf --volumes-from data-mount --volumes-from php-fpm-unixsocket --link php-fpm:php -p 80:80 -p 443:443 nginx
+docker create --name nginx --volumes-from web-data --volumes-from nginx-conf --volumes-from nginx-cache --volumes-from data-mount --volumes-from php-fpm-unixsocket --link php-fpm:php --link deluge-web:deluge -p 80:80 -p 443:443 nginx
 if [ -f /etc/systemd/system/nginx.service ]; then cp systemd-services/nginx.service /etc/systemd/system/nginx.service && sudo systemctl daemon-reload && sudo systemctl enable nginx && sudo systemctl start nginx; else echo "nginx.service file not copied since it exists; do it on your own."; fi
 
 # owncloud cron runner
